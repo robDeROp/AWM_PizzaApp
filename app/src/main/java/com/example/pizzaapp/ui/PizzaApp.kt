@@ -20,8 +20,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,9 +31,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.marsphotos.ui.screens.HomeScreen
 import com.example.pizzaapp.R
+import com.example.pizzaapp.ui.screens.MarsUiState
 import com.example.pizzaapp.ui.screens.MarsViewModel
+enum class Screen {
+    Home,
+    Login,
+    Shopping
+}
 @Composable
 fun MarsPhotosApp(modifier: Modifier = Modifier) {
+    var currentScreen by remember { mutableStateOf(Screen.Home) }
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -40,7 +48,7 @@ fun MarsPhotosApp(modifier: Modifier = Modifier) {
                 title = { Text(stringResource(R.string.app_name)) },
                 actions = {
                     IconButton(
-                        onClick = { /* Handle cart button click */ },
+                        onClick = { currentScreen = Screen.Shopping },
                         content = {
                             Icon(
                                 imageVector = Icons.Default.ShoppingCart,
@@ -49,11 +57,20 @@ fun MarsPhotosApp(modifier: Modifier = Modifier) {
                         }
                     )
                     IconButton(
-                        onClick = { /* Handle login button click */ },
+                        onClick = { currentScreen = Screen.Login },
                         content = {
                             Icon(
                                 imageVector = Icons.Default.AccountCircle,
                                 contentDescription = "Login"
+                            )
+                        }
+                    )
+                    IconButton(
+                        onClick = { currentScreen = Screen.Home },
+                        content = {
+                            Icon(
+                                imageVector = Icons.Default.Home,
+                                contentDescription = "Home"
                             )
                         }
                     )
@@ -68,27 +85,18 @@ fun MarsPhotosApp(modifier: Modifier = Modifier) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Menu",
-                    style = MaterialTheme.typography.h5,
-                    modifier = Modifier.padding(vertical = 16.dp)
-                )
+
                 val marsViewModel: MarsViewModel = viewModel()
-                HomeScreen(marsUiState = marsViewModel.marsUiState)
+                if (currentScreen == Screen.Home) {
+                    HomeScreen(marsUiState = marsViewModel.marsUiState)
+                } else if (currentScreen == Screen.Login) {
+                    HomeScreen(marsUiState = MarsUiState.Login)
+                }
+                else if (currentScreen == Screen.Shopping) {
+                    HomeScreen(marsUiState = MarsUiState.ShoppingCart)
+                }
             }
         },
-        bottomBar = {
-            BottomAppBar(
-                backgroundColor = Color.LightGray,
-                content = {
-                    Button(
-                        onClick = { /* Handle view cart button click */ },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "View Cart")
-                    }
-                }
-            )
-        }
+
     )
 }

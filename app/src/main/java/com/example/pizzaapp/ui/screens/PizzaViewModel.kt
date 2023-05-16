@@ -32,6 +32,9 @@ sealed interface MarsUiState {
     data class Success(val pizzas: List<Pizza>) : MarsUiState
     object Error : MarsUiState
     object Loading : MarsUiState
+    object Login : MarsUiState
+    object ShoppingCart : MarsUiState
+
 }
 
 class MarsViewModel : ViewModel() {
