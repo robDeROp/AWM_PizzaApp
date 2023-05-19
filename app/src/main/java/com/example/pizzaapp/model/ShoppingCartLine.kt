@@ -26,6 +26,6 @@ import kotlinx.serialization.Serializable
 data class ShoppingCartLine(
     val id: Int,
     val pizza: Pizza,
-    val quantity: Int,
+    var quantity: Int,
 )
 

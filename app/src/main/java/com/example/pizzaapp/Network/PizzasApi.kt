@@ -1,14 +1,13 @@
 package com.example.pizzaapp.Network
+import com.example.pizzaapp.model.CurrentUser
 import com.example.pizzaapp.model.Pizza
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.POST
 
 
@@ -30,4 +29,7 @@ interface ApiService {
     /* het /PRODUCTSget.php endpoint */
     @GET("getpizzas.php")
     suspend fun getProducten(): List<Pizza>
+
+    @POST("checklogin.php")
+    suspend fun checkLogin(@Body productData: LoginToSend): List<CurrentUser>
 }

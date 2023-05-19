@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pizzaapp.Network.LoginToSend
 import com.example.pizzaapp.Network.ProductenApi
 import com.example.pizzaapp.model.Pizza
 import kotlinx.coroutines.launch
@@ -66,6 +67,28 @@ class MarsViewModel : ViewModel() {
                 producten = response
                 MarsUiState.Success(producten)
             } catch(e: IOException) {
+                MarsUiState.Error
+            }
+        }
+    }
+
+
+    fun tryLogin(Email: String, Password: String, viewModel: MarsViewModel) {
+        val nieuwProduct = LoginToSend(
+            email = Email,
+            password = Password
+        )
+
+        viewModel.viewModelScope.launch {
+            viewModel.marsUiState = try {
+                val response = ProductenApi.retrofitService.checkLogin(nieuwProduct)
+                MarsUiState.Loading
+                if (response.isNotEmpty()) {
+                    MarsUiState.Error
+                } else {
+                    MarsUiState.Error
+                }
+            } catch (e: IOException) {
                 MarsUiState.Error
             }
         }

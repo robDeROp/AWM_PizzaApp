@@ -14,11 +14,22 @@
  * limitations under the License.
  */
 
-package com.example.pizzaapp.ui.theme
+package com.example.pizzaapp.model
 
-import androidx.compose.ui.graphics.Color
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-val Primary_200 = Color(0xFFfcdf7b)
-val Primary_500 = Color(0xFFec9740)
-val Primary_700 = Color(0xFFc77648)
-val Teal200 = Color(0xFF03DAC5)
+/**
+ * This data class defines a Mars photo which includes an ID, and the image URL.
+ */
+@Serializable
+data class CurrentUser(
+    @SerialName(value = "UserId") val id: Int,
+    @SerialName(value = "FirstName") val FN: String,
+    @SerialName(value = "LastName") val LN: String,
+    @SerialName(value = "Password") val PW: String,
+    @SerialName(value = "Email") val E: String,
+    @SerialName(value = "PhoneNr") val PN: String,
+    @SerialName(value = "Role") val R: Int,
+)
+

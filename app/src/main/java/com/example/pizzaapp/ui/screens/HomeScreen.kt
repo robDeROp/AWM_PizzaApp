@@ -41,9 +41,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.request.ImageRequest
 import coil.compose.AsyncImage
+import com.example.pizzaapp.Network.ApiService
 import com.example.pizzaapp.model.ShoppingCartLine
+import com.example.pizzaapp.ui.screens.MarsViewModel
+
 val shoppingCartList = mutableListOf<ShoppingCartLine>()
 var pizzaList = mutableListOf<Pizza>()
 @Composable
@@ -120,9 +124,11 @@ fun ShoppingCartScreen(shoppingCartLines: MutableList<ShoppingCartLine>, modifie
 
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier) {
-    var username by remember { mutableStateOf("") }
+    val marsViewModel: MarsViewModel = viewModel()
+
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    val isLoginEnabled = username.isNotBlank() && password.isNotBlank()
+    val isLoginEnabled = email.isNotBlank() && password.isNotBlank()
 
     Box(
         contentAlignment = Alignment.Center,
@@ -139,8 +145,8 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             )
 
             OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
+                value = email,
+                onValueChange = { email = it },
                 label = { Text("Username") },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -158,7 +164,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { /* Handle login here */ },
+                onClick = { marsViewModel.tryLogin(email, password, marsViewModel) },
                 enabled = isLoginEnabled,
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -167,7 +173,6 @@ fun LoginScreen(modifier: Modifier = Modifier) {
         }
     }
 }
-
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
     Box(
@@ -250,13 +255,13 @@ fun MenuList(pizzas: List<Pizza>, modifier: Modifier = Modifier) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         var quantity by remember { mutableStateOf(0) }
-                        TextButton(onClick = { quantity-- }) {
+                        TextButton(onClick = { if(quantity>0) quantity-- }) {
                             Text("-")
                         }
                         TextField(
                             value = quantity.toString(),
                             onValueChange = { newValue ->
-                                quantity = newValue.toIntOrNull() ?: quantity
+                                if(newValue> 0.toString())quantity = newValue.toIntOrNull() ?: quantity
                             },
                             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                             modifier = Modifier.height(50.dp).width(80.dp)
@@ -268,7 +273,22 @@ fun MenuList(pizzas: List<Pizza>, modifier: Modifier = Modifier) {
                         Button(
                             onClick = {
                                 val shoppingCartLine = ShoppingCartLine(id = shoppingCartList.size + 1, pizza = pizzas[index], quantity = quantity)
-                                shoppingCartList.add(shoppingCartLine)
+
+                                if (shoppingCartLine.quantity > 0) {
+                                    var lineExists = false
+
+                                    for (line in shoppingCartList) {
+                                        if (line.pizza == shoppingCartLine.pizza) {
+                                            line.quantity += shoppingCartLine.quantity
+                                            lineExists = true
+                                            break
+                                        }
+                                    }
+
+                                    if (!lineExists) {
+                                        shoppingCartList.add(shoppingCartLine)
+                                    }
+                                }
                             },
                             modifier = Modifier.height(50.dp).width(200.dp)
                         ) {
