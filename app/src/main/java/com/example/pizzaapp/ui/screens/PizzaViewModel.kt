@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pizzaapp.Network.LoginToSend
 import com.example.pizzaapp.Network.ProductenApi
+import com.example.pizzaapp.model.CurrentUser
 import com.example.pizzaapp.model.Pizza
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -34,9 +35,9 @@ sealed interface MarsUiState {
     object Error : MarsUiState
     object Loading : MarsUiState
     object Login : MarsUiState
+    object Register : MarsUiState
     object ShoppingCart : MarsUiState
-
-}
+    data class LoginSuccess(val user: CurrentUser) : MarsUiState}
 
 class MarsViewModel : ViewModel() {
     /** The mutable State that stores the status of the most recent request */
@@ -73,23 +74,27 @@ class MarsViewModel : ViewModel() {
     }
 
 
-    fun tryLogin(Email: String, Password: String, viewModel: MarsViewModel) {
+    fun tryLogin(email: String, password: String) {
+        marsUiState = MarsUiState.Loading
+
         val nieuwProduct = LoginToSend(
-            email = Email,
-            password = Password
+            email = email,
+            password = password
         )
 
-        viewModel.viewModelScope.launch {
-            viewModel.marsUiState = try {
+        viewModelScope.launch {
+            try {
                 val response = ProductenApi.retrofitService.checkLogin(nieuwProduct)
-                MarsUiState.Loading
                 if (response.isNotEmpty()) {
-                    MarsUiState.Error
+                    // Login successful, response contains user details
+                    val currentUser = response[0]
+                    marsUiState = MarsUiState.LoginSuccess(currentUser)
                 } else {
-                    MarsUiState.Error
+                    // Login failed, response is empty
+                    marsUiState = MarsUiState.Error
                 }
             } catch (e: IOException) {
-                MarsUiState.Error
+                marsUiState = MarsUiState.Error
             }
         }
     }

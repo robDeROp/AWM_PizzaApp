@@ -60,8 +60,17 @@ fun HomeScreen(
         is MarsUiState.Success -> MenuList(marsUiState.pizzas, modifier)
         is MarsUiState.Error -> ErrorScreen(modifier)
         is MarsUiState.Login -> LoginScreen(modifier)
+        is MarsUiState.Register -> RegisterScreen(modifier)
         is MarsUiState.ShoppingCart -> {
             ShoppingCartScreen(shoppingCartList, modifier)
+        }
+        is MarsUiState.LoginSuccess -> {
+            val userRole = marsUiState.user.R
+            if (userRole == 1) {
+                ShoppingCartScreen(shoppingCartList, modifier)
+            } else if (userRole == 0) {
+                AdminScreen(modifier)
+            }
         }
     }
 }
@@ -70,7 +79,20 @@ fun HomeScreen(
  * The home screen displaying the loading message.
  */
 
+@Composable
+fun AdminScreen(modifier: Modifier = Modifier) {
+    Text(
+        text = "AdminScreen",
+        style = MaterialTheme.typography.h5,
+        modifier = Modifier.padding(vertical = 16.dp)
+    )
 
+    Text(
+        text = "Order Overzicht",
+        style = MaterialTheme.typography.h6,
+        modifier = Modifier.padding(vertical = 8.dp)
+    )
+}
 @Composable
 fun ShoppingCartScreen(shoppingCartLines: MutableList<ShoppingCartLine>, modifier: Modifier = Modifier) {
     val cartLinesState = remember { mutableStateListOf(*shoppingCartLines.toTypedArray()) }
@@ -120,8 +142,6 @@ fun ShoppingCartScreen(shoppingCartLines: MutableList<ShoppingCartLine>, modifie
         }
     }
 }
-
-
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier) {
     val marsViewModel: MarsViewModel = viewModel()
@@ -129,6 +149,110 @@ fun LoginScreen(modifier: Modifier = Modifier) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val isLoginEnabled = email.isNotBlank() && password.isNotBlank()
+
+    when (val uiState = marsViewModel.marsUiState) {
+        is MarsUiState.LoginSuccess -> {
+            // Login successful, display user information
+            val user = uiState.user
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = modifier.fillMaxSize()
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = "Welcome, ${user.FN} ${user.LN}!",
+                        style = MaterialTheme.typography.h4,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    Text("Email: ${user.E}")
+                    Text("Phone Number: ${user.PN}")
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = { /* Perform logout action here */ },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Logout")
+                    }
+                }
+            }
+        }
+        MarsUiState.Error -> {
+            // Display error label on the login screen
+            Text("Error occurred while logging in.", color = Color.Red)
+        }
+        MarsUiState.Loading -> {
+            // You can replace the following with your Loading screen implementation
+            Text("Loading...")
+        }
+        else -> {
+            // Login form
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = modifier.fillMaxSize()
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = "Login",
+                        style = MaterialTheme.typography.h4,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        label = { Text("Username") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    OutlinedTextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        label = { Text("Password") },
+                        visualTransformation = PasswordVisualTransformation(),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = { marsViewModel.tryLogin(email, password) },
+                        enabled = isLoginEnabled,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Login")
+                    }
+                }
+            }
+        }
+
+    }
+}
+@Composable
+fun RegisterScreen(modifier: Modifier = Modifier) {
+    val marsViewModel: MarsViewModel = viewModel()
+
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var phoneNr by remember { mutableStateOf("") }
+
+    val isRegisterEnabled = firstName.isNotBlank() &&
+            lastName.isNotBlank() &&
+            email.isNotBlank() &&
+            password.isNotBlank() &&
+            phoneNr.isNotBlank()
 
     Box(
         contentAlignment = Alignment.Center,
@@ -139,15 +263,33 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             Text(
-                text = "Login",
+                text = "Register",
                 style = MaterialTheme.typography.h4,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
             OutlinedTextField(
+                value = firstName,
+                onValueChange = { firstName = it },
+                label = { Text("First Name") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = lastName,
+                onValueChange = { lastName = it },
+                label = { Text("Last Name") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Username") },
+                label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -163,16 +305,26 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            OutlinedTextField(
+                value = phoneNr,
+                onValueChange = { phoneNr = it },
+                label = { Text("Phone Number") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             Button(
-                onClick = { marsViewModel.tryLogin(email, password, marsViewModel) },
-                enabled = isLoginEnabled,
+                onClick = {                },
+                enabled = isRegisterEnabled,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Login")
+                Text(text = "Register")
             }
         }
     }
 }
+
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
     Box(
