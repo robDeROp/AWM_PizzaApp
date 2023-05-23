@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pizzaapp.R
 import com.example.pizzaapp.model.Pizza
-import com.example.pizzaapp.ui.screens.MarsUiState
+import com.example.pizzaapp.ui.screens.PizzaUiState
 import com.example.pizzaapp.ui.theme.MarsPhotosTheme
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -44,28 +44,28 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.request.ImageRequest
 import coil.compose.AsyncImage
-import com.example.pizzaapp.Network.ApiService
+import com.example.pizzaapp.model.CurrentUser
 import com.example.pizzaapp.model.ShoppingCartLine
-import com.example.pizzaapp.ui.screens.MarsViewModel
+import com.example.pizzaapp.ui.screens.PizzaViewModel
 
 val shoppingCartList = mutableListOf<ShoppingCartLine>()
 var pizzaList = mutableListOf<Pizza>()
 @Composable
 fun HomeScreen(
-    marsUiState: MarsUiState,
+    pizzaUiState: PizzaUiState,
     modifier: Modifier = Modifier
 ) {
-    when (marsUiState) {
-        is MarsUiState.Loading -> LoadingScreen(modifier)
-        is MarsUiState.Success -> MenuList(marsUiState.pizzas, modifier)
-        is MarsUiState.Error -> ErrorScreen(modifier)
-        is MarsUiState.Login -> LoginScreen(modifier)
-        is MarsUiState.Register -> RegisterScreen(modifier)
-        is MarsUiState.ShoppingCart -> {
+    when (pizzaUiState) {
+        is PizzaUiState.Loading -> LoadingScreen(modifier)
+        is PizzaUiState.Menu -> MenuList(pizzaUiState.pizzas, modifier)
+        is PizzaUiState.Error -> ErrorScreen(modifier)
+        is PizzaUiState.Login -> LoginScreen(modifier)
+        is PizzaUiState.Register -> RegisterScreen(modifier)
+        is PizzaUiState.ShoppingCart -> {
             ShoppingCartScreen(shoppingCartList, modifier)
         }
-        is MarsUiState.LoginSuccess -> {
-            val userRole = marsUiState.user.R
+        is PizzaUiState.LoginSuccess -> {
+            val userRole = pizzaUiState.user.R
             if (userRole == 1) {
                 ShoppingCartScreen(shoppingCartList, modifier)
             } else if (userRole == 0) {
@@ -144,14 +144,14 @@ fun ShoppingCartScreen(shoppingCartLines: MutableList<ShoppingCartLine>, modifie
 }
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier) {
-    val marsViewModel: MarsViewModel = viewModel()
+    val pizzaViewModel: PizzaViewModel = viewModel()
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val isLoginEnabled = email.isNotBlank() && password.isNotBlank()
 
-    when (val uiState = marsViewModel.marsUiState) {
-        is MarsUiState.LoginSuccess -> {
+    when (val uiState = pizzaViewModel.pizzaUiState) {
+        is PizzaUiState.LoginSuccess -> {
             // Login successful, display user information
             val user = uiState.user
             Box(
@@ -174,7 +174,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
-                        onClick = { /* Perform logout action here */ },
+                        onClick = { pizzaViewModel.LogOut() },
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(text = "Logout")
@@ -182,11 +182,11 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 }
             }
         }
-        MarsUiState.Error -> {
+        PizzaUiState.Error -> {
             // Display error label on the login screen
             Text("Error occurred while logging in.", color = Color.Red)
         }
-        MarsUiState.Loading -> {
+        PizzaUiState.Loading -> {
             // You can replace the following with your Loading screen implementation
             Text("Loading...")
         }
@@ -226,11 +226,20 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
-                        onClick = { marsViewModel.tryLogin(email, password) },
+                        onClick = { pizzaViewModel.tryLogin(email, password) },
                         enabled = isLoginEnabled,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(text = "Login")
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = { pizzaViewModel.ToRegister() },
+                        enabled = isLoginEnabled,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Al een Account?")
                     }
                 }
             }
@@ -240,7 +249,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 }
 @Composable
 fun RegisterScreen(modifier: Modifier = Modifier) {
-    val marsViewModel: MarsViewModel = viewModel()
+    val pizzaViewModel: PizzaViewModel = viewModel()
 
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }

@@ -25,21 +25,21 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.marsphotos.ui.screens.HomeScreen
 import com.example.pizzaapp.R
-import com.example.pizzaapp.ui.screens.MarsUiState
-import com.example.pizzaapp.ui.screens.MarsViewModel
+import com.example.pizzaapp.ui.screens.PizzaUiState
+import com.example.pizzaapp.ui.screens.PizzaViewModel
 enum class Screen {
     Home,
     Login,
     Shopping
 }
 @Composable
-fun MarsPhotosApp(modifier: Modifier = Modifier) {
+fun PizzaBestelApp(modifier: Modifier = Modifier) {
+    val PizzaViewModel: PizzaViewModel = viewModel()
+
     var currentScreen by remember { mutableStateOf(Screen.Home) }
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -66,7 +66,10 @@ fun MarsPhotosApp(modifier: Modifier = Modifier) {
                         }
                     )
                     IconButton(
-                        onClick = { currentScreen = Screen.Home },
+                        onClick = {
+                            currentScreen = Screen.Home
+                            PizzaViewModel.getPizzas()
+                        },
                         content = {
                             Icon(
                                 imageVector = Icons.Default.Home,
@@ -86,14 +89,14 @@ fun MarsPhotosApp(modifier: Modifier = Modifier) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                val marsViewModel: MarsViewModel = viewModel()
+                val PizzaViewModel: PizzaViewModel = viewModel()
                 if (currentScreen == Screen.Home) {
-                    HomeScreen(marsUiState = marsViewModel.marsUiState)
+                    HomeScreen(pizzaUiState = PizzaViewModel.pizzaUiState)
                 } else if (currentScreen == Screen.Login) {
-                    HomeScreen(marsUiState = MarsUiState.Login)
+                    HomeScreen(pizzaUiState = PizzaUiState.Login)
                 }
                 else if (currentScreen == Screen.Shopping) {
-                    HomeScreen(marsUiState = MarsUiState.ShoppingCart)
+                    HomeScreen(pizzaUiState = PizzaUiState.ShoppingCart)
                 }
             }
         },

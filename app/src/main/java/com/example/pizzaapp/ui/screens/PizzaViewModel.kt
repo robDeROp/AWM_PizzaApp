@@ -30,18 +30,18 @@ import java.io.IOException
 /**
  * UI state for the Home screen
  */
-sealed interface MarsUiState {
-    data class Success(val pizzas: List<Pizza>) : MarsUiState
-    object Error : MarsUiState
-    object Loading : MarsUiState
-    object Login : MarsUiState
-    object Register : MarsUiState
-    object ShoppingCart : MarsUiState
-    data class LoginSuccess(val user: CurrentUser) : MarsUiState}
+sealed interface PizzaUiState {
+    data class Menu(val pizzas: List<Pizza>) : PizzaUiState
+    object Error : PizzaUiState
+    object Loading : PizzaUiState
+    object Login : PizzaUiState
+    object Register : PizzaUiState
+    object ShoppingCart : PizzaUiState
+    data class LoginSuccess(val user: CurrentUser) : PizzaUiState}
 
-class MarsViewModel : ViewModel() {
+class PizzaViewModel : ViewModel() {
     /** The mutable State that stores the status of the most recent request */
-    var marsUiState: MarsUiState by mutableStateOf(MarsUiState.Loading)
+    var pizzaUiState: PizzaUiState by mutableStateOf(PizzaUiState.Loading)
         private set
     // Producten ophalen
     lateinit var producten: List<Pizza>
@@ -59,23 +59,41 @@ class MarsViewModel : ViewModel() {
     /**
      * Gets Mars photos information from the Mars API Retrofit service and updates the
      */
-    private fun getPizzas() {
+
+    private fun getOrders() {
         viewModelScope.launch {
-            marsUiState = try {
+            pizzaUiState = try {
                 val response = ProductenApi.retrofitService.getProducten()
                 // TODO: hou rekening met response.status en response.message zodra die zijn
                 // toegevoegd.
                 producten = response
-                MarsUiState.Success(producten)
+                PizzaUiState.Menu(producten)
             } catch(e: IOException) {
-                MarsUiState.Error
+                PizzaUiState.Error
             }
         }
     }
 
-
+    fun getPizzas() {
+        viewModelScope.launch {
+            pizzaUiState = try {
+                val response = ProductenApi.retrofitService.getProducten()
+                // TODO: hou rekening met response.status en response.message zodra die zijn
+                // toegevoegd.
+                producten = response
+                PizzaUiState.Menu(producten)
+            } catch(e: IOException) {
+                PizzaUiState.Error
+            }
+        }
+    }
+    fun ToRegister (){
+    }
+    fun LogOut() {
+        pizzaUiState = PizzaUiState.Menu(producten)
+    }
     fun tryLogin(email: String, password: String) {
-        marsUiState = MarsUiState.Loading
+        pizzaUiState = PizzaUiState.Loading
 
         val nieuwProduct = LoginToSend(
             email = email,
@@ -88,15 +106,14 @@ class MarsViewModel : ViewModel() {
                 if (response.isNotEmpty()) {
                     // Login successful, response contains user details
                     val currentUser = response[0]
-                    marsUiState = MarsUiState.LoginSuccess(currentUser)
+                    pizzaUiState = PizzaUiState.LoginSuccess(currentUser)
                 } else {
                     // Login failed, response is empty
-                    marsUiState = MarsUiState.Error
+                    pizzaUiState = PizzaUiState.Error
                 }
             } catch (e: IOException) {
-                marsUiState = MarsUiState.Error
+                pizzaUiState = PizzaUiState.Error
             }
         }
     }
-
 }
