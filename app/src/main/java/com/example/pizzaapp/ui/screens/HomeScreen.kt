@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.marsphotos.ui.screens
+package com.example.pizzaapp.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,154 +28,142 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pizzaapp.R
 import com.example.pizzaapp.model.Pizza
-import com.example.pizzaapp.ui.screens.PizzaUiState
 import com.example.pizzaapp.ui.theme.MarsPhotosTheme
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.request.ImageRequest
 import coil.compose.AsyncImage
-import com.example.pizzaapp.model.CurrentUser
 import com.example.pizzaapp.model.ShoppingCartLine
-import com.example.pizzaapp.ui.screens.PizzaViewModel
 
-val shoppingCartList = mutableListOf<ShoppingCartLine>()
+var shoppingCartList = mutableListOf<ShoppingCartLine>()
 var pizzaList = mutableListOf<Pizza>()
+
 @Composable
-fun HomeScreen(
-    pizzaUiState: PizzaUiState,
-    modifier: Modifier = Modifier
+fun MenuList(
+    pizzas: List<Pizza>,
+    modifier: Modifier = Modifier,
+    OnCartButtonClick: (List<ShoppingCartLine>) -> Unit
 ) {
-    when (pizzaUiState) {
-        is PizzaUiState.Loading -> LoadingScreen(modifier)
-        is PizzaUiState.Menu -> MenuList(pizzaUiState.pizzas, modifier)
-        is PizzaUiState.Error -> ErrorScreen(modifier)
-        is PizzaUiState.Login -> LoginScreen(modifier)
-        is PizzaUiState.Register -> RegisterScreen(modifier)
-        is PizzaUiState.ShoppingCart -> {
-            ShoppingCartScreen(shoppingCartList, modifier)
-        }
-        is PizzaUiState.LoginSuccess -> {
-            val userRole = pizzaUiState.user.R
-            if (userRole == 1) {
-                ShoppingCartScreen(shoppingCartList, modifier)
-            } else if (userRole == 0) {
-                AdminScreen(modifier)
-            }
-        }
-    }
-}
-@Composable
-fun MenuList(pizzas: List<Pizza>, modifier: Modifier = Modifier) {
     pizzaList = pizzas as MutableList<Pizza>
     Text(
         text = "Menu",
         style = MaterialTheme.typography.h5,
         modifier = Modifier.padding(vertical = 16.dp)
     )
-    LazyColumn(modifier.fillMaxSize().padding(top = 16.dp)) {
-        items(pizzas.size) { index ->
-            Column {
-                // Display the pizza image at the top
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    AsyncImage(
-                        modifier = Modifier.fillMaxWidth(),
-                        model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(pizzas[index].photourl)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = stringResource(R.string.mars_photo),
-                        contentScale = ContentScale.FillWidth,
-                    )
-                }
-
-                // Display the pizza name, ingredients, and price below the image
-                Column(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)
-                ) {
-                    Text(
-                        text = pizzas[index].name,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-                    Text(
-                        text = pizzas[index].ingredients,
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-                    Text(
-                        text = "€${pizzas[index].price}",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-
-                    // Quantity and Add to Cart button
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        var quantity by remember { mutableStateOf(0) }
-                        TextButton(onClick = { if(quantity>0) quantity-- }) {
-                            Text("-")
-                        }
-                        TextField(
-                            value = quantity.toString(),
-                            onValueChange = { newValue ->
-                                if(newValue> 0.toString())quantity = newValue.toIntOrNull() ?: quantity
-                            },
-                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                            modifier = Modifier.height(50.dp).width(80.dp)
+    Column(modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.weight(0.9f)) {
+            items(pizzas.size) { index ->
+                Column {
+                    // Display the pizza image at the top
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        AsyncImage(
+                            modifier = Modifier.fillMaxWidth(),
+                            model = ImageRequest.Builder(context = LocalContext.current)
+                                .data(pizzas[index].photourl)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = stringResource(R.string.mars_photo),
+                            contentScale = ContentScale.FillWidth,
                         )
-                        Spacer(modifier = Modifier.width(3.dp))
-                        TextButton(onClick = { quantity++ }) {
-                            Text("+")
-                        }
-                        Button(
-                            onClick = {
-                                val shoppingCartLine = ShoppingCartLine(id = shoppingCartList.size + 1, pizza = pizzas[index], quantity = quantity)
+                    }
 
-                                if (shoppingCartLine.quantity > 0) {
-                                    var lineExists = false
+                    // Display the pizza name, ingredients, and price below the image
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)
+                    ) {
+                        Text(
+                            text = pizzas[index].name,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        Text(
+                            text = pizzas[index].ingredients,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        Text(
+                            text = "€${pizzas[index].price}",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
 
-                                    for (line in shoppingCartList) {
-                                        if (line.pizza == shoppingCartLine.pizza) {
-                                            line.quantity += shoppingCartLine.quantity
-                                            lineExists = true
-                                            break
+                        // Quantity and Add to Cart button
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            var quantity by remember { mutableStateOf(0) }
+                            TextButton(onClick = { if(quantity>0) quantity-- }) {
+                                Text("-")
+                            }
+                            TextField(
+                                value = quantity.toString(),
+                                onValueChange = { newValue ->
+                                    if(newValue > 0.toString()) quantity = newValue.toIntOrNull() ?: quantity
+                                },
+                                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                                modifier = Modifier.height(50.dp).width(80.dp)
+                            )
+                            Spacer(modifier = Modifier.width(3.dp))
+                            TextButton(onClick = { quantity++ }) {
+                                Text("+")
+                            }
+                            Button(
+                                onClick = {
+                                    val shoppingCartLine = ShoppingCartLine(id = shoppingCartList.size + 1, pizza = pizzas[index], quantity = quantity)
+
+                                    if (shoppingCartLine.quantity > 0) {
+                                        var lineExists = false
+
+                                        for (line in shoppingCartList) {
+                                            if (line.pizza == shoppingCartLine.pizza) {
+                                                line.quantity += shoppingCartLine.quantity
+                                                lineExists = true
+                                                break
+                                            }
+                                        }
+
+                                        if (!lineExists) {
+                                            shoppingCartList.add(shoppingCartLine)
                                         }
                                     }
-
-                                    if (!lineExists) {
-                                        shoppingCartList.add(shoppingCartLine)
-                                    }
-                                }
-                            },
-                            modifier = Modifier.height(50.dp).width(200.dp)
-                        ) {
-                            Text("Add to cart")
+                                },
+                                modifier = Modifier.height(50.dp).width(200.dp)
+                            ) {
+                                Text("Add to cart")
+                            }
                         }
                     }
-                }
 
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 16.dp)
-                )
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 16.dp)
+                    )
+                }
             }
+        }
+        Button(
+            onClick = { OnCartButtonClick(shoppingCartList) },
+            modifier = Modifier
+                .height(50.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .weight(0.1f)
+                .align(Alignment.CenterHorizontally)
+        ) {
+            Text("View Cart")
         }
     }
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun ResultScreenPreview() {
@@ -195,3 +181,4 @@ fun ResultScreenPreview() {
         MenuList(pizzas)
     }
 }
+*/

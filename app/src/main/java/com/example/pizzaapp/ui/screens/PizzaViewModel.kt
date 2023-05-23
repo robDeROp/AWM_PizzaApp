@@ -76,15 +76,10 @@ class PizzaViewModel : ViewModel() {
 
     fun getPizzas() {
         viewModelScope.launch {
-            pizzaUiState = try {
                 val response = ProductenApi.retrofitService.getProducten()
                 // TODO: hou rekening met response.status en response.message zodra die zijn
                 // toegevoegd.
                 producten = response
-                PizzaUiState.Menu(producten)
-            } catch(e: IOException) {
-                PizzaUiState.Error
-            }
         }
     }
     fun ToRegister (){
