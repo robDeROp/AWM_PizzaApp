@@ -20,37 +20,8 @@ import com.example.pizzaapp.ui.screens.PizzaViewModel
 @Composable
 fun PizzaBestelApp(modifier: Modifier = Modifier) {
     val pizzaViewModel: PizzaViewModel = viewModel()
-    pizzaViewModel.getPizzas()
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.app_name)) },
-                actions = {
-                    IconButton(
-                        onClick = {
-                        },
-                        content = {
-                            Icon(
-                                imageVector = Icons.Default.Home,
-                                contentDescription = "Home"
-                            )
-                        }
-                    )
-                    IconButton(
-                        onClick = {
-                            // Handle shopping action
-                        },
-                        content = {
-                            Icon(
-                                imageVector = Icons.Default.AccountCircle,
-                                contentDescription = "Login"
-                            )
-                        }
-                    )
-                }
-            )
-        },
         content = {
             Box(modifier = Modifier.fillMaxSize()) {
                 AppNavigation()
