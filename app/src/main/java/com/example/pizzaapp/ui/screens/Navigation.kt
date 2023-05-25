@@ -37,11 +37,7 @@ fun AppNavigation() {
                     onRegisterClick = {
                         navController.navigate("register")
                     },
-                    ToAccount = { receivedCurrentUser ->
-                        // Handle the receivedCurrentUser here
-                        // You can store it in a variable or perform any other actions
-                        // For example, updating _currentUser variable:
-                        _currentUser = receivedCurrentUser
+                    ToAccount = { receivedCurrentUser -> _currentUser
                     }
                 )
             }

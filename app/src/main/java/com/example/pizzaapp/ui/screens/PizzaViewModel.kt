@@ -18,8 +18,6 @@ package com.example.pizzaapp.ui.screens
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pizzaapp.Network.LoginToSend
@@ -28,30 +26,47 @@ import com.example.pizzaapp.model.CurrentUser
 import com.example.pizzaapp.model.Pizza
 import kotlinx.coroutines.launch
 import java.io.IOException
+sealed interface LoginUIState {
+    data class Success(val data: CurrentUser) : LoginUIState
+    object Error: LoginUIState
+    object Loading: LoginUIState
+    object Empty : LoginUIState // New state added
+}
 
 class PizzaViewModel : ViewModel() {
     var pizzas by mutableStateOf<List<Pizza>>(emptyList())
         private set
-    var currentUser: CurrentUser?= null
+
+
+    var loginUIState: LoginUIState by mutableStateOf(LoginUIState.Empty)
+        private set
+
+    var UserID: Int = 0
     init {
         getPizzas()
     }
-    suspend fun loginUser(email: String, password: String): CurrentUser? {
+    fun loginUser(email: String, password: String) {
         val loginCred = LoginToSend(
             email = email,
             password = password
         )
+        viewModelScope.launch {
+            loginUIState = try {
+                LoginUIState.Loading
 
-        return try {
-            val response = ProductenApi.retrofitService.checkLogin(loginCred)
-            if (response.isNotEmpty()) {
-                response[0]
-            } else {
-                null
+                val response = ProductenApi.retrofitService.checkLogin(loginCred)
+                // TODO: hou rekening met response.status en response.message zodra die zijn
+                // toegevoegd.
+                if(response.isNotEmpty()){
+                    UserID = response[0].id
+                    LoginUIState.Success(response[0])
+                }
+                else{
+                    LoginUIState.Error
+                }
+            } catch (e: IOException) {
+                LoginUIState.Error
             }
-        } catch (e: IOException) {
-            // Handle network error
-            null
         }
     }
     private fun getPizzas() {
