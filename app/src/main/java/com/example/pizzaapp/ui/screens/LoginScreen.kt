@@ -22,26 +22,27 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     onBackHomeClick: () -> Unit,
     onRegisterClick: () -> Unit,
-    ToAccount: ((Int?) -> Unit)
+    ToAccount: ()-> Unit,
+    pizzaViewModel: PizzaViewModel
 ) {
 
 
     var userID by remember { mutableStateOf(0) }
-    val pizzaViewModel: PizzaViewModel = viewModel()
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val isLoginEnabled = email.isNotBlank() && password.isNotBlank()
 
-    var loginUIState by remember { mutableStateOf<LoginUIState>(LoginUIState.Empty) }
-
-    when (loginUIState) {
+    when (pizzaViewModel.loginUIState) {
         is LoginUIState.Loading -> LoadingScreen(modifier)
-        is LoginUIState.Success -> ToAccount(pizzaViewModel.UserID)
+        is LoginUIState.Success -> {
+            pizzaViewModel.ResetUIState()
+            ToAccount()
+        }
         is LoginUIState.Error -> ErrorScreen(modifier)
         is LoginUIState.Empty -> { /* Nothing to show */ }
+        else -> {}
     }
-
     Column(
         modifier = modifier.fillMaxSize()
     ) {
@@ -91,14 +92,16 @@ fun LoginScreen(
                     onClick = {
                         pizzaViewModel.loginUser(email, password)
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                        enabled = isLoginEnabled
                 ) {
                     Text(text = "Login")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = { onRegisterClick() },
+                    onClick = {
+                        onRegisterClick() },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = "nog geen Account?")

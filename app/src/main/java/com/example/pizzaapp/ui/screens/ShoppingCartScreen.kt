@@ -20,6 +20,9 @@ fun ShoppingCartScreen(
     shoppingCartLines: MutableList<ShoppingCartLine>,
     modifier: Modifier = Modifier,
     onBackHomeClick: () -> Unit,
+    onPlaceOrder: () -> Unit,
+    toLogin: () -> Unit,
+    pizzaViewModel: PizzaViewModel
 ) {
     val cartLinesState = remember { mutableStateListOf(*shoppingCartLines.toTypedArray()) }
     Text(
@@ -109,6 +112,19 @@ fun ShoppingCartScreen(
                                 .padding(horizontal = 16.dp, vertical = 16.dp)
                         )
                     }
+                }
+                Button(
+                    onClick = {
+                        if(pizzaViewModel.currentUserRole == -1){
+                            toLogin()
+                        }
+                        else{
+                            onPlaceOrder()
+                        }
+                     },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(text = "Order Plaatsen")
                 }
             }
         }

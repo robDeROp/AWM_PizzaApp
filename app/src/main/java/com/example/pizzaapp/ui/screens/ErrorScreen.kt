@@ -17,7 +17,7 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center,
         modifier = modifier.fillMaxSize()
     ) {
-        Text(stringResource(R.string.loading_failed))
+        Text("Failed to login")
     }
 }
 @Preview(showBackground = true)

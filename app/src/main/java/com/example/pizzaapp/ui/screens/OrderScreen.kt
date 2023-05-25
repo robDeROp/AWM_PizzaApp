@@ -8,16 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AdminScreen(modifier: Modifier = Modifier) {
-
+fun OrderScreen(modifier: Modifier = Modifier) {
     Text(
-        text = "AdminScreen",
-        style = MaterialTheme.typography.h5,
-        modifier = Modifier.padding(vertical = 16.dp)
-    )
-
-    Text(
-        text = "Order Overzicht",
+        text = "Plaats je order",
         style = MaterialTheme.typography.h6,
         modifier = Modifier.padding(vertical = 8.dp)
     )

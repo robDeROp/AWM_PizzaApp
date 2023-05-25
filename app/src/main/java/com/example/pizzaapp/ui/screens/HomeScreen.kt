@@ -52,7 +52,8 @@ fun MenuList(
     pizzas: List<Pizza>,
     modifier: Modifier = Modifier,
     onCartButtonClick: (List<ShoppingCartLine>) -> Unit,
-    onAccountButtonClick: ()->Unit
+    onAccountButtonClick: ()->Unit,
+    pizzaViewModel: PizzaViewModel
 ) {
     val pizzaList = pizzas.toMutableList()
     Column(

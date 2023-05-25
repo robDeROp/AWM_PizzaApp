@@ -41,9 +41,13 @@ class PizzaViewModel : ViewModel() {
     var loginUIState: LoginUIState by mutableStateOf(LoginUIState.Empty)
         private set
 
-    var UserID: Int = 0
+    var currentUser: CurrentUser? = null
+    var currentUserRole: Int? = -1
     init {
         getPizzas()
+    }
+    fun ResetUIState(){
+        loginUIState = LoginUIState.Empty
     }
     fun loginUser(email: String, password: String) {
         val loginCred = LoginToSend(
@@ -58,7 +62,8 @@ class PizzaViewModel : ViewModel() {
                 // TODO: hou rekening met response.status en response.message zodra die zijn
                 // toegevoegd.
                 if(response.isNotEmpty()){
-                    UserID = response[0].id
+                    currentUserRole = response[0].R
+                    currentUser = response[0]
                     LoginUIState.Success(response[0])
                 }
                 else{

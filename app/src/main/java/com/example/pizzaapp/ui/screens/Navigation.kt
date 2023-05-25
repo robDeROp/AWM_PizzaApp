@@ -9,27 +9,29 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pizzaapp.model.CurrentUser
 import com.example.pizzaapp.model.ShoppingCartLine
-var _currentUser: CurrentUser? = null
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
     val pizzaViewModel: PizzaViewModel = viewModel()
+
+
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
-            val viewModel: PizzaViewModel = viewModel()
             val shoppingCartList = remember { mutableStateListOf<ShoppingCartLine>() }
-            val pizzas = viewModel.pizzas
+            val pizzas = pizzaViewModel.pizzas
 
             MenuList(pizzas = pizzas, onCartButtonClick = { item ->
                 shoppingCartList += item
                 navController.navigate("shoppingCart")
             }, onAccountButtonClick = {
                 navController.navigate("login")
-            })
+            },
+                pizzaViewModel = pizzaViewModel
+            )
         }
         composable("error") { ErrorScreen() }
         composable("login") {
-            if (_currentUser == null) {
+            if (pizzaViewModel.currentUserRole == -1) {
                 LoginScreen(
                     onBackHomeClick = {
                         navController.navigate("home")
@@ -37,16 +39,30 @@ fun AppNavigation() {
                     onRegisterClick = {
                         navController.navigate("register")
                     },
-                    ToAccount = { receivedCurrentUser -> _currentUser
-                    }
+                    ToAccount = {
+                        if(pizzaViewModel.currentUserRole==0){
+                            navController.navigate("shoppingCart")
+                        }
+                        else if(pizzaViewModel.currentUserRole==1){
+                            navController.navigate("admin")
+                        }
+                        else{
+                            navController.navigate("home")
+                        }
+                    },
+                    pizzaViewModel = pizzaViewModel
                 )
             }
             else{
-                AccountScreen(
-                    currentUser = _currentUser,
-                    onBackHomeClick = {
-                        navController.navigate("home")
-                    })
+                if(pizzaViewModel.currentUserRole==0){
+                    navController.navigate("home")
+                }
+                else if(pizzaViewModel.currentUserRole==1){
+                    navController.navigate("admin")
+                }
+                else{
+                    navController.navigate("error")
+                }
             }
         }
         composable("register") {
@@ -58,9 +74,14 @@ fun AppNavigation() {
                 })
         }
         composable("admin") { AdminScreen() }
+        composable("order") { OrderScreen() }
         composable("shoppingCart") {
-            ShoppingCartScreen(shoppingCartList, onBackHomeClick = {
-                navController.navigate("home")})
+            ShoppingCartScreen(shoppingCartList,
+                onBackHomeClick = { navController.navigate("home")},
+                onPlaceOrder = { navController.navigate("order")},
+                toLogin = { navController.navigate("login")},
+                pizzaViewModel = pizzaViewModel
+            )
         }
     }
 }
