@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pizzaapp.Network.LoginToSend
-import com.example.pizzaapp.Network.ProductenApi
+import com.example.pizzaapp.Network.PizzaApi
 import com.example.pizzaapp.model.CurrentUser
 import com.example.pizzaapp.model.Pizza
 import kotlinx.coroutines.launch
@@ -54,7 +54,7 @@ class PizzaViewModel : ViewModel() {
             loginUIState = try {
                 LoginUIState.Loading
 
-                val response = ProductenApi.retrofitService.checkLogin(loginCred)
+                val response = PizzaApi.retrofitService.checkLogin(loginCred)
                 // TODO: hou rekening met response.status en response.message zodra die zijn
                 // toegevoegd.
                 if(response.isNotEmpty()){
@@ -72,7 +72,7 @@ class PizzaViewModel : ViewModel() {
     private fun getPizzas() {
         viewModelScope.launch {
             try {
-                val response = ProductenApi.retrofitService.getProducten()
+                val response = PizzaApi.retrofitService.getProducten()
                     val pizzaList = response
                     if (pizzaList != null) {
                         pizzas = pizzaList

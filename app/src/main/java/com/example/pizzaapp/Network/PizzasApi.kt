@@ -18,7 +18,7 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .build()
 
-object ProductenApi {
+object PizzaApi {
     val retrofitService: ApiService by lazy {
         retrofit.create(ApiService::class.java)
     }
