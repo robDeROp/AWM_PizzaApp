@@ -23,12 +23,11 @@ import kotlinx.serialization.Serializable
  * This data class defines a Mars photo which includes an ID, and the image URL.
  */
 @Serializable
-data class CurrentUser(
-    @SerialName(value = "UserId") val id: Int,
-    @SerialName(value = "FirstName") val FN: String,
-    @SerialName(value = "LastName") val LN: String,
-    @SerialName(value = "Email") val E: String,
-    @SerialName(value = "PhoneNr") val PN: String,
-    @SerialName(value = "Role") val R: Int,
+data class OrderLine(
+    @SerialName(value = "BestellingId") val BestellingId: Int,
+    @SerialName(value = "UserId") val UserId: Int,
+    @SerialName(value = "Comment") val Comment: String,
+    @SerialName(value = "PickupTime") val PickupTime: String,
+    @SerialName(value = "Status") val Status: Int,
 )
 

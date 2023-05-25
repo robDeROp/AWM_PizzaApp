@@ -16,15 +16,25 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun RegisterScreen(modifier: Modifier = Modifier,
                    onBackHomeClick: () -> Unit,
                    onLoginClick: () -> Unit,
-
-                   ) {
-    val pizzaViewModel: PizzaViewModel = viewModel()
-
+                   ToAccount: ()-> Unit,
+                   pizzaViewModel: PizzaViewModel
+) {
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var phoneNr by remember { mutableStateOf("") }
+
+    when (pizzaViewModel.loginUIState) {
+        is LoginUIState.Loading -> LoadingScreen(modifier)
+        is LoginUIState.Success -> {
+            pizzaViewModel.ResetUIState()
+            ToAccount()
+        }
+        is LoginUIState.Error -> ErrorScreen(modifier)
+        is LoginUIState.Empty -> { /* Nothing to show */ }
+        else -> {}
+    }
 
     val isRegisterEnabled = firstName.isNotBlank() &&
             lastName.isNotBlank() &&
@@ -45,7 +55,7 @@ fun RegisterScreen(modifier: Modifier = Modifier,
             },
             navigationIcon = {
                 IconButton(onClick = onBackHomeClick) {
-                    Icon(Icons.Filled.Home, contentDescription = "Back")
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -104,7 +114,7 @@ fun RegisterScreen(modifier: Modifier = Modifier,
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = { },
+                    onClick = { pizzaViewModel.registerUser(firstName, lastName, email, password, phoneNr) },
                     enabled = isRegisterEnabled,
                     modifier = Modifier.fillMaxWidth()
                 ) {

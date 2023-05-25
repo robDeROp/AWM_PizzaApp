@@ -44,14 +44,13 @@ import coil.request.ImageRequest
 import coil.compose.AsyncImage
 import com.example.pizzaapp.model.ShoppingCartLine
 
-var shoppingCartList = mutableListOf<ShoppingCartLine>()
 var pizzaList = mutableListOf<Pizza>()
 
 @Composable
 fun MenuList(
     pizzas: List<Pizza>,
     modifier: Modifier = Modifier,
-    onCartButtonClick: (List<ShoppingCartLine>) -> Unit,
+    onCartButtonClick: () -> Unit,
     onAccountButtonClick: ()->Unit,
     pizzaViewModel: PizzaViewModel
 ) {
@@ -75,7 +74,7 @@ fun MenuList(
                 )
                 Row {
                     IconButton(
-                        onClick = { onCartButtonClick(shoppingCartList) },
+                        onClick = { onCartButtonClick() },
                         modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
@@ -92,6 +91,7 @@ fun MenuList(
                             contentDescription = "Account"
                         )
                     }
+
                 }
             }
         }
@@ -163,7 +163,7 @@ fun MenuList(
                                     Button(
                                         onClick = {
                                             val shoppingCartLine = ShoppingCartLine(
-                                                id = shoppingCartList.size + 1,
+                                                id = pizzaViewModel.shoppingCartList.size + 1,
                                                 pizza = pizzas[index],
                                                 quantity = quantity
                                             )
@@ -171,7 +171,7 @@ fun MenuList(
                                             if (shoppingCartLine.quantity > 0) {
                                                 var lineExists = false
 
-                                                for (line in shoppingCartList) {
+                                                for (line in pizzaViewModel.shoppingCartList) {
                                                     if (line.pizza == shoppingCartLine.pizza) {
                                                         line.quantity += shoppingCartLine.quantity
                                                         lineExists = true
@@ -180,7 +180,7 @@ fun MenuList(
                                                 }
 
                                                 if (!lineExists) {
-                                                    shoppingCartList.add(shoppingCartLine)
+                                                    pizzaViewModel.shoppingCartList.add(shoppingCartLine)
                                                 }
                                             }
                                         },
@@ -198,16 +198,6 @@ fun MenuList(
                             )
                         }
                     }
-                }
-
-                Button(
-                    onClick = { onCartButtonClick(shoppingCartList) },
-                    modifier = Modifier
-                        .height(50.dp)
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                ) {
-                    Text("View Cart")
                 }
             }
         }

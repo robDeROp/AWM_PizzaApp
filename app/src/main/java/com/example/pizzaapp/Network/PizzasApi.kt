@@ -1,5 +1,6 @@
 package com.example.pizzaapp.Network
 import com.example.pizzaapp.model.CurrentUser
+import com.example.pizzaapp.model.OrderLine
 import com.example.pizzaapp.model.Pizza
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -29,7 +30,18 @@ interface ApiService {
     /* het /PRODUCTSget.php endpoint */
     @GET("getpizzas.php")
     suspend fun getProducten(): List<Pizza>
-
+    @GET("getorders.php")
+    suspend fun getOrders(): List<OrderLine>
     @POST("checklogin.php")
     suspend fun checkLogin(@Body productData: LoginToSend): List<CurrentUser>
+
+    @POST("adduser.php")
+    suspend fun checkRegister(@Body productData: RegisterToSend): CurrentUser
+
+    @POST("addorder.php")
+    suspend fun AddOrder(@Body productData: PostOrder): AddOrderResp
+    @POST("updateorderstatus.php")
+    suspend fun UpdateOrder(@Body productData: UpdateOrder): UpdatOrderResp
+    @POST("addorderline.php")
+    suspend fun AddLine(@Body productData: PostOrderLine): AddOrderLineResp
 }

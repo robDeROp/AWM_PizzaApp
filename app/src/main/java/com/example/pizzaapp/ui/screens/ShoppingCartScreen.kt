@@ -17,13 +17,15 @@ import com.example.pizzaapp.model.ShoppingCartLine
 
 @Composable
 fun ShoppingCartScreen(
-    shoppingCartLines: MutableList<ShoppingCartLine>,
     modifier: Modifier = Modifier,
     onBackHomeClick: () -> Unit,
     onPlaceOrder: () -> Unit,
     toLogin: () -> Unit,
     pizzaViewModel: PizzaViewModel
 ) {
+
+
+    var shoppingCartLines = pizzaViewModel.shoppingCartList
     val cartLinesState = remember { mutableStateListOf(*shoppingCartLines.toTypedArray()) }
     Text(
         text = "Shopping Cart",
