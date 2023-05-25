@@ -27,6 +27,7 @@ import com.example.pizzaapp.model.ShoppingCartLine
 @Composable
 fun AdminScreen(modifier: Modifier = Modifier,
                 onBackHomeClick: () -> Unit,
+                ToDetails: () -> Unit,
                 onLogoutButtonClick: () -> Unit,
                 pizzaViewModel: PizzaViewModel,
 ) {
@@ -73,12 +74,20 @@ fun AdminScreen(modifier: Modifier = Modifier,
                             Text(text = "Comment: ${order.Comment}")
                             Text(text = "Pickup Time: ${order.PickupTime}")
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(text = "Status: ${order.Status}", modifier = Modifier.weight(1f))
                                 Button(
                                     onClick = { pizzaViewModel.updateOrder(order.BestellingId) },
                                     modifier = Modifier.padding(horizontal = 8.dp)
                                 ) {
                                     Text(text = "DONE")
+                                }
+                                Button(
+                                    onClick = {
+                                        pizzaViewModel.getLines(order.BestellingId)
+                                        ToDetails()
+                                              },
+                                    modifier = Modifier.padding(horizontal = 8.dp)
+                                ) {
+                                    Text(text = "DETAILS")
                                 }
                             }
                         }

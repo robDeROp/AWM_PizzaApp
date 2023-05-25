@@ -10,6 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 
 private const val BASE_URL = "https://www.quintenstroobants.be/pizzastoreapi/"
@@ -32,6 +33,11 @@ interface ApiService {
     suspend fun getProducten(): List<Pizza>
     @GET("getorders.php")
     suspend fun getOrders(): List<OrderLine>
+
+    @GET("getorderline.php")
+    suspend fun getLines(
+        @Query("productData") productData: getDetails
+    ): List<getDetailsResponse>
     @POST("checklogin.php")
     suspend fun checkLogin(@Body productData: LoginToSend): List<CurrentUser>
 

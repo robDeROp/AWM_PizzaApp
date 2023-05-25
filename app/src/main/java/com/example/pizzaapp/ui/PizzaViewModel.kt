@@ -44,11 +44,15 @@ sealed interface OrderUIState {
     object Loading: OrderUIState
     object Empty : OrderUIState // New state added
 }
+
 class PizzaViewModel : ViewModel() {
     var pizzas by mutableStateOf<List<Pizza>>(emptyList())
         private set
 
     var orders by mutableStateOf<List<OrderLine>>(emptyList())
+        private set
+
+    var orderDetails by mutableStateOf<List<getDetailsResponse>>(emptyList())
         private set
 
     var loginUIState: LoginUIState by mutableStateOf(LoginUIState.Empty)
@@ -171,6 +175,24 @@ class PizzaViewModel : ViewModel() {
                 val Orders = response
                 if (Orders != null) {
                     orders = Orders
+                } else {
+                    // Handle null response body
+                }
+            } catch (e: IOException) {
+                // Handle network error
+            }
+        }
+    }
+    fun getLines(OrderID: Int) {
+        viewModelScope.launch {
+            val loginCred = getDetails(
+                BestellingId = OrderID
+            )
+            try {
+                val response = PizzaApi.retrofitService.getLines(loginCred)
+                val OrdersDetails = response
+                if (OrdersDetails != null) {
+                     orderDetails = OrdersDetails
                 } else {
                     // Handle null response body
                 }

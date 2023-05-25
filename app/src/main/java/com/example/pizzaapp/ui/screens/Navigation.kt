@@ -39,6 +39,12 @@ fun AppNavigation() {
             )
         }
         composable("error") { ErrorScreen() }
+        composable("details") { OrderDetails(
+            onBackHomeClick = {
+                navController.navigate("home")
+            },
+            pizzaViewModel = pizzaViewModel
+        ) }
         composable("login") {
             LoginScreen(
                 onBackHomeClick = {
@@ -81,6 +87,7 @@ fun AppNavigation() {
         composable("admin") { AdminScreen(
             pizzaViewModel = pizzaViewModel,
             onBackHomeClick = { navController.navigate("home")},
+            ToDetails = { navController.navigate("details")},
             onLogoutButtonClick = {
                 navController.navigate("login")
             }
