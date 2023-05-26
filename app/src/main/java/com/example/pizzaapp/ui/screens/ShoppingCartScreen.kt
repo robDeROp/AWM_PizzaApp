@@ -114,19 +114,19 @@ fun ShoppingCartScreen(
                                 .padding(horizontal = 16.dp, vertical = 16.dp)
                         )
                     }
-                }
-                Button(
-                    onClick = {
-                        if(pizzaViewModel.currentUserRole == -1){
-                            toLogin()
-                        }
-                        else{
-                            onPlaceOrder()
-                        }
-                     },
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(text = "Order Plaatsen")
+                    Button(
+                        onClick = {
+                            if(pizzaViewModel.currentUserRole == -1){
+                                toLogin()
+                            }
+                            else{
+                                onPlaceOrder()
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(text = "Order Plaatsen")
+                    }
                 }
             }
         }

@@ -22,29 +22,32 @@ fun AppNavigation() {
         composable("home") {
             val shoppingCartList = remember { mutableStateListOf<ShoppingCartLine>() }
             val pizzas = pizzaViewModel.pizzas
-            MenuList(pizzas = pizzas,
+            MenuList(
+                pizzas = pizzas,
                 onCartButtonClick = {
                     navController.navigate("shoppingCart")
                 },
                 onAccountButtonClick = {
-                if (pizzaViewModel.currentUserRole == 0) {
-                    navController.navigate("account")
-                } else if (pizzaViewModel.currentUserRole == 1) {
-                    navController.navigate("admin")
-                } else {
-                    navController.navigate("login")
-                }
-            },
+                    if (pizzaViewModel.currentUserRole == 0) {
+                        navController.navigate("account")
+                    } else if (pizzaViewModel.currentUserRole == 1) {
+                        navController.navigate("admin")
+                    } else {
+                        navController.navigate("login")
+                    }
+                },
                 pizzaViewModel = pizzaViewModel
             )
         }
         composable("error") { ErrorScreen() }
-        composable("details") { OrderDetails(
-            onBackHomeClick = {
-                navController.navigate("home")
-            },
-            pizzaViewModel = pizzaViewModel
-        ) }
+        composable("details") {
+            OrderDetails(
+                onBackHomeClick = {
+                    navController.navigate("admin")
+                },
+                pizzaViewModel = pizzaViewModel
+            )
+        }
         composable("login") {
             LoginScreen(
                 onBackHomeClick = {
@@ -66,9 +69,10 @@ fun AppNavigation() {
             )
         }
         composable("register") {
-            RegisterScreen(onBackHomeClick = {
-                navController.navigate("home")
-            },
+            RegisterScreen(
+                onBackHomeClick = {
+                    navController.navigate("home")
+                },
                 onLoginClick = {
                     navController.navigate("login")
                 },
@@ -84,33 +88,49 @@ fun AppNavigation() {
                 pizzaViewModel = pizzaViewModel
             )
         }
-        composable("admin") { AdminScreen(
-            pizzaViewModel = pizzaViewModel,
-            onBackHomeClick = { navController.navigate("home")},
-            ToDetails = { navController.navigate("details")},
-            onLogoutButtonClick = {
-                navController.navigate("login")
-            }
-        ) }
-        composable("confirmOrder") { ConfirmOrder(
-            pizzaViewModel = pizzaViewModel,
-            onBackHomeClick = { navController.navigate("home")},
-            ) }
-        composable("account") { AccountScreen(
-            pizzaViewModel = pizzaViewModel,
-            onBackHomeClick = { navController.navigate("home")},
-            ) }
-        composable("order") { OrderScreen(
-            onBackHomeClick = { navController.navigate("home")},
-            onOrderConfirm = { navController.navigate("confirmOrder")},
-            pizzaViewModel = pizzaViewModel
+        composable("admin") {
+            AdminScreen(
+                pizzaViewModel = pizzaViewModel,
+                onAccountButtonClick = { navController.navigate("account") },
+                ToDetails = { navController.navigate("details") },
+                onLogoutButtonClick = {
+                    navController.navigate("login")
+                }
+            )
+        }
+        composable("confirmOrder") {
+            ConfirmOrder(
+                pizzaViewModel = pizzaViewModel,
+                onBackHomeClick = { navController.navigate("home") },
+            )
+        }
+        composable("account") {
+            AccountScreen(
+                pizzaViewModel = pizzaViewModel,
+                onBackHomeClick = {
+                    if (pizzaViewModel.currentUserRole == 0) {
+                        navController.navigate("home")
+                    } else if (pizzaViewModel.currentUserRole == 1) {
+                        navController.navigate("admin")
+                    } else {
+                        navController.navigate("login")
+                    }
+                },
+            )
+        }
+        composable("order") {
+            OrderScreen(
+                onBackHomeClick = { navController.navigate("home") },
+                onOrderConfirm = { navController.navigate("confirmOrder") },
+                pizzaViewModel = pizzaViewModel
 
-        ) }
+            )
+        }
         composable("shoppingCart") {
             ShoppingCartScreen(
-                onBackHomeClick = { navController.navigate("home")},
-                onPlaceOrder = { navController.navigate("order")},
-                toLogin = { navController.navigate("login")},
+                onBackHomeClick = { navController.navigate("home") },
+                onPlaceOrder = { navController.navigate("order") },
+                toLogin = { navController.navigate("login") },
                 pizzaViewModel = pizzaViewModel
             )
         }

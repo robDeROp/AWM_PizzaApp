@@ -44,7 +44,12 @@ sealed interface OrderUIState {
     object Loading: OrderUIState
     object Empty : OrderUIState // New state added
 }
-
+sealed interface OrderDetaiUIState {
+    data class Success(var orderDetails:List<getDetailsResponse>): OrderUIState, OrderDetaiUIState
+    object Error: OrderDetaiUIState
+    object Loading: OrderDetaiUIState
+    object Empty : OrderDetaiUIState // New state added
+}
 class PizzaViewModel : ViewModel() {
     var pizzas by mutableStateOf<List<Pizza>>(emptyList())
         private set
@@ -56,6 +61,9 @@ class PizzaViewModel : ViewModel() {
         private set
 
     var loginUIState: LoginUIState by mutableStateOf(LoginUIState.Empty)
+        private set
+
+    var orderDetailsUIState: OrderDetaiUIState by mutableStateOf(OrderDetaiUIState.Empty)
         private set
 
     var orderUIState: OrderUIState by mutableStateOf(OrderUIState.Empty)
@@ -73,6 +81,9 @@ class PizzaViewModel : ViewModel() {
     }
     fun ResetUIOrderState(){
         orderUIState = OrderUIState.Empty
+    }
+    fun ResetUIOrderDetailsState(){
+        orderDetailsUIState = OrderDetaiUIState.Empty
     }
     @RequiresApi(Build.VERSION_CODES.O)
     fun PlaceYourOrder(hours:Int, minutes:Int, comment:String){
@@ -185,26 +196,30 @@ class PizzaViewModel : ViewModel() {
     }
     fun getLines(OrderID: Int) {
         viewModelScope.launch {
-            val loginCred = getDetails(
-                BestellingId = OrderID
-            )
-            try {
+            orderDetailsUIState = try {
+                OrderDetaiUIState.Loading
+                val loginCred = getDetails(
+                    BestellingId = OrderID
+                )
                 val response = PizzaApi.retrofitService.getLines(loginCred)
                 val OrdersDetails = response
                 if (OrdersDetails != null) {
-                     orderDetails = OrdersDetails
+                    orderDetails = OrdersDetails
+
                 } else {
-                    // Handle null response body
+                    OrderDetaiUIState.Error
                 }
+                OrderDetaiUIState.Success(orderDetails)
+
             } catch (e: IOException) {
-                // Handle network error
+                OrderDetaiUIState.Error
             }
         }
     }
-    fun updateOrder (OrderID: Int) {
+    fun updateOrder (OrderID: Int, Status: Int) {
         val loginCred = UpdateOrder(
             BestellingId = OrderID,
-            Status = 1
+            Status = Status
         )
         viewModelScope.launch {
             val response = PizzaApi.retrofitService.UpdateOrder(loginCred)

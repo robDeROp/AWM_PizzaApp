@@ -104,7 +104,7 @@ fun LoginScreen(
                         onRegisterClick() },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "nog geen Account?")
+                    Text(text = "Nog geen account?")
                 }
             }
         }

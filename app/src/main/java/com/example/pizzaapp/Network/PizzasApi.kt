@@ -34,10 +34,12 @@ interface ApiService {
     @GET("getorders.php")
     suspend fun getOrders(): List<OrderLine>
 
-    @GET("getorderline.php")
-    suspend fun getLines(
-        @Query("productData") productData: getDetails
-    ): List<getDetailsResponse>
+    @POST("getorderline.php")
+    suspend fun getLines(@Body productData: getDetails): List<getDetailsResponse>
+
+    @POST("getordersbyuser.php")
+    suspend fun getOrderByUser(@Body productData: getDetails): List<getDetailsResponse>
+
     @POST("checklogin.php")
     suspend fun checkLogin(@Body productData: LoginToSend): List<CurrentUser>
 

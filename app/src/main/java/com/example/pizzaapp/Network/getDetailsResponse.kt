@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 class getDetailsResponse (
     @SerialName(value = "BestellingLineId") val BestellingLineId: Int,
-    @SerialName(value = "PizzaId") val PizzaId: Int,
-    @SerialName(value = "BestellingId") val BestellingId: Int,
+    @SerialName(value = "Name") val PizzaName: String,
     @SerialName(value = "Quantity") val Quantity: Int,
+    @SerialName(value = "Price") val Price: Double,
 )
