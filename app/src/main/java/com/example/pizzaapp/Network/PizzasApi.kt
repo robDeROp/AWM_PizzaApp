@@ -1,5 +1,6 @@
 package com.example.pizzaapp.Network
 import com.example.pizzaapp.model.CurrentUser
+import com.example.pizzaapp.model.OrderHistoryLine
 import com.example.pizzaapp.model.OrderLine
 import com.example.pizzaapp.model.Pizza
 
@@ -38,7 +39,7 @@ interface ApiService {
     suspend fun getLines(@Body productData: getDetails): List<getDetailsResponse>
 
     @POST("getordersbyuser.php")
-    suspend fun getOrderByUser(@Body productData: getDetails): List<getDetailsResponse>
+    suspend fun getOrderByUser(@Body productData: getUserOrders): List<OrderHistoryLine>
 
     @POST("checklogin.php")
     suspend fun checkLogin(@Body productData: LoginToSend): List<CurrentUser>

@@ -6,13 +6,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -43,7 +44,7 @@ fun OrderScreen(
         TopAppBar(
             title = {
                 Text(
-                    text = "Place Order",
+                    text = "Plaats je bestelling",
                     style = MaterialTheme.typography.h6,
                     modifier = Modifier.padding(start = 16.dp)
                 )
@@ -57,65 +58,91 @@ fun OrderScreen(
         )
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
-                modifier = Modifier.align(Alignment.Center),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
             ) {
                 val currentTime = LocalTime.now()
                 val currentHours = currentTime.hour.toString()
                 val currentMinutes = currentTime.minute.toString()
 
-                TextField(
-                    value = hours.value.takeIf { it.isNotEmpty() } ?: currentHours,
-                    onValueChange = { value ->
-                        hours.value = value
-                    },
-                    label = { Text("Hours") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
+                Text(
+                    text = "Plaats je bestelling",
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
-                TextField(
-                    value = minutes.value.takeIf { it.isNotEmpty() } ?: currentMinutes,
-                    onValueChange = { value ->
-                        minutes.value = value
-                    },
-                    label = { Text("Minutes") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
+                Text(
+                    text = "Vul het tijdstip in waarop je de bestelling wilt ophalen. De bestelling moet op dezelfde dag worden opgehaald.",
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    TextField(
+                        value = hours.value.takeIf { it.isNotEmpty() } ?: currentHours,
+                        onValueChange = { value ->
+                            hours.value = value
+                        },
+                        label = { Text("Uur") },
+                        modifier = Modifier
+                            .weight(0.4f)
+                            .padding(end = 8.dp)
+                    )
+                    TextField(
+                        value = minutes.value.takeIf { it.isNotEmpty() } ?: currentMinutes,
+                        onValueChange = { value ->
+                            minutes.value = value
+                        },
+                        label = { Text("Minuten") },
+                        modifier = Modifier
+                            .weight(0.4f)
+                            .padding(start = 8.dp)
+                    )
+                }
+
                 TextField(
                     value = comment.value,
                     onValueChange = { value -> comment.value = value },
-                    label = { Text("Comment") },
+                    label = { Text("Opmerking") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
+                        .padding(vertical = 8.dp)
                 )
+
+                var isTimeValid by remember { mutableStateOf(true) } // Initialize as true
+
                 Button(
                     onClick = {
                         val selectedHours = hours.value.toIntOrNull() ?: 0
                         val selectedMinutes = minutes.value.toIntOrNull() ?: 0
-                        val isTimeValid = isValidTime(selectedHours, selectedMinutes, currentTime)
+                        isTimeValid = isValidTime(selectedHours, selectedMinutes, currentTime)
+
                         if (isTimeValid) {
-                            pizzaViewModel.PlaceYourOrder(selectedHours, selectedMinutes, comment.value)
-                        } else {
-                            // Set time validity to false if it's not valid
+                            pizzaViewModel.PlaceYourOrder(
+                                selectedHours,
+                                selectedMinutes,
+                                comment.value
+                            )
                         }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(vertical = 16.dp)
                 ) {
-                    Text(text = "Place Order")
+                    Text(text = "Bestelling plaatsen")
                 }
-                if (!isTimeValid.value) {
+
+                if (!isTimeValid) {
                     Text(
-                        text = "Time Not Valid",
+                        text = "Tijdstip is niet geldig!",
                         color = Color.Red,
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
                 }
+                Text(
+                    text = "Je kunt de status van je bestelling volgen op je accountpagina.",
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
             }
         }
     }
@@ -126,10 +153,12 @@ private fun isValidTime(selectedHours: Int, selectedMinutes: Int, currentTime: L
     val currentHours = currentTime.hour
     val currentMinutes = currentTime.minute
 
-    if (selectedHours > currentHours) {
-        return true
-    } else if (selectedHours == currentHours && selectedMinutes > currentMinutes) {
-        return true
+    if (selectedHours in 0..23 && selectedMinutes in 0..59) {
+        if (selectedHours > currentHours) {
+            return true
+        } else if (selectedHours == currentHours && selectedMinutes > currentMinutes) {
+            return true
+        }
     }
     return false
 }

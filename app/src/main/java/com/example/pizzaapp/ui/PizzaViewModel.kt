@@ -23,10 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pizzaapp.Network.*
-import com.example.pizzaapp.model.CurrentUser
-import com.example.pizzaapp.model.OrderLine
-import com.example.pizzaapp.model.Pizza
-import com.example.pizzaapp.model.ShoppingCartLine
+import com.example.pizzaapp.model.*
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.time.LocalDateTime
@@ -58,6 +55,9 @@ class PizzaViewModel : ViewModel() {
         private set
 
     var orderDetails by mutableStateOf<List<getDetailsResponse>>(emptyList())
+        private set
+
+    var userOrders by mutableStateOf<List<OrderHistoryLine>>(emptyList())
         private set
 
     var loginUIState: LoginUIState by mutableStateOf(LoginUIState.Empty)
@@ -192,6 +192,23 @@ class PizzaViewModel : ViewModel() {
             } catch (e: IOException) {
                 // Handle network error
             }
+        }
+    }
+    fun getUserOrderHistory(userid: Int) {
+        viewModelScope.launch {
+            OrderDetaiUIState.Loading
+            val loginCred = getUserOrders(
+                UserId = userid
+            )
+            val response = PizzaApi.retrofitService.getOrderByUser(loginCred)
+            val UO = response
+            if (UO != null) {
+                userOrders = UO
+
+            } else {
+                OrderDetaiUIState.Error
+            }
+
         }
     }
     fun getLines(OrderID: Int) {
