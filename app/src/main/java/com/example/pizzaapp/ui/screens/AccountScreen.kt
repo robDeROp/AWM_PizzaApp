@@ -28,8 +28,8 @@ fun AccountScreen(
     val currentUser = pizzaViewModel.currentUser
     val userOrders = pizzaViewModel.userOrders
     val filteredUserOrders = remember { mutableStateOf(userOrders) }
-    val availableStatus = listOf("All", "Cancelled", "Busy", "Done")
-    val selectedStatus = remember { mutableStateOf("All") }
+    val availableStatus = listOf("Allemaal", "Geannuleerd", "Bezig", "Klaar")
+    val selectedStatus = remember { mutableStateOf("Allemaal") }
 
     // Fetch user order history
     LaunchedEffect(currentUser) {
@@ -49,7 +49,7 @@ fun AccountScreen(
             },
             navigationIcon = {
                 IconButton(onClick = onBackHomeClick) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "Terug")
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -57,18 +57,18 @@ fun AccountScreen(
 
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
             Text(
-                text = "Account Details",
+                text = "Gegevens",
                 style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 22.sp),
                 modifier = Modifier.padding(vertical = 8.dp).align(Alignment.CenterHorizontally)
             )
 
             if (currentUser != null) {
-                UserInfoRow("User ID", currentUser.id.toString())
-                UserInfoRow("First Name", currentUser.FN)
-                UserInfoRow("Last Name", currentUser.LN)
+                UserInfoRow("Gebruiker ID", currentUser.id.toString())
+                UserInfoRow("Voornaam", currentUser.FN)
+                UserInfoRow("Achternaam", currentUser.LN)
                 UserInfoRow("Email", currentUser.E)
-                UserInfoRow("Phone Number", currentUser.PN)
-                UserInfoRow("Role", currentUser.R.toString())
+                UserInfoRow("Telefoon", currentUser.PN)
+                UserInfoRow("Rol", currentUser.R.toString())
             }
         }
         Divider(
@@ -78,10 +78,10 @@ fun AccountScreen(
         )
         // Filter user order history by status
         val filteredOrders = when (selectedStatus.value) {
-            "All" -> userOrders
-            "Cancelled" -> userOrders.filter { it.Status == -1 }
-            "Busy" -> userOrders.filter { it.Status == 0 }
-            "Done" -> userOrders.filter { it.Status == 1 }
+            "Allemaal" -> userOrders
+            "Geannuleerd" -> userOrders.filter { it.Status == -1 }
+            "Bezig" -> userOrders.filter { it.Status == 0 }
+            "Klaar" -> userOrders.filter { it.Status == 1 }
             else -> userOrders
         }
         filteredUserOrders.value = filteredOrders
@@ -178,21 +178,21 @@ fun AccountScreen(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text(text = "Log Out")
+            Text(text = "Afmelden")
         }
     }
 }
 @Composable
 fun OrderHistoryItem(order: OrderHistoryLine) {
     val statusText = when (order.Status) {
-        -1 -> "Cancelled"
-        0 -> "Busy"
-        1 -> "Done"
-        else -> "Unknown"
+        -1 -> "Geannuleerd"
+        0 -> "Bezig"
+        1 -> "Klaar"
+        else -> "Onbekend"
     }
 
     UserInfoRow("Bestelling ID", order.BestellingId.toString())
-    UserInfoRow("Pickup Time", order.PickupTime)
+    UserInfoRow("Ophaal moment", order.PickupTime)
     UserInfoRow("Status", statusText)
 }
 

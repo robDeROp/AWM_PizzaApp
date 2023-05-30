@@ -35,8 +35,8 @@ fun AdminScreen(modifier: Modifier = Modifier,
 ) {
     pizzaViewModel.getOrders()
     val orders = pizzaViewModel.orders.toMutableList()
-    val availableStatus = listOf("All", "Cancelled", "Busy", "Done")
-    val selectedStatus = remember { mutableStateOf("Busy") }
+    val availableStatus = listOf("Allemaal", "Geannuleerd", "Bezig", "Klaar")
+    val selectedStatus = remember { mutableStateOf("Bezig") }
 
     Column {
         TopAppBar(
@@ -77,10 +77,10 @@ fun AdminScreen(modifier: Modifier = Modifier,
             }
         }
         val filteredOrders = when (selectedStatus.value) {
-            "All" -> orders
-            "Cancelled" -> orders.filter { it.Status == -1 }
-            "Busy" -> orders.filter { it.Status == 0 }
-            "Done" -> orders.filter { it.Status == 1 }
+            "Allemaal" -> orders
+            "Geannuleerd" -> orders.filter { it.Status == -1 }
+            "Bezig" -> orders.filter { it.Status == 0 }
+            "Klaar" -> orders.filter { it.Status == 1 }
             else -> orders
         }
         var expanded by remember { mutableStateOf(false) }
@@ -168,10 +168,10 @@ fun AdminScreen(modifier: Modifier = Modifier,
                     items(filteredOrders.size) { index ->
                         val order = filteredOrders[index]
 
-                        Text(text = "Order ID: ${order.BestellingId}")
-                        Text(text = "User ID: ${order.UserId}")
-                        Text(text = "Comment: ${order.Comment}")
-                        Text(text = "Pickup Time: ${order.PickupTime}")
+                        Text(text = "Bestelling ID: ${order.BestellingId}")
+                        Text(text = "Gebruiker ID: ${order.UserId}")
+                        Text(text = "Opmerking: ${order.Comment}")
+                        Text(text = "Ophaal moment: ${order.PickupTime}")
                         Text(text = "Status: ${getStatusText(order.Status)}")
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             if (order.Status != 1) {
@@ -216,9 +216,9 @@ fun AdminScreen(modifier: Modifier = Modifier,
 @Composable
 private fun getStatusText(status: Int): String {
     return when (status) {
-        -1 -> "Cancelled"
-        0 -> "Busy"
-        1 -> "Done"
-        else -> "Unknown"
+        -1 -> "Geannuleerd"
+        0 -> "Bezig"
+        1 -> "Klaar"
+        else -> "Onbekend"
     }
 }

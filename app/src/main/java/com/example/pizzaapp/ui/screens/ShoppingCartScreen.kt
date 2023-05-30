@@ -36,7 +36,7 @@ fun ShoppingCartScreen(
         TopAppBar(
             title = {
                 Text(
-                    text = "Shopping Cart",
+                    text = "Winkelwagen",
                     style = MaterialTheme.typography.h6,
                     modifier = Modifier.padding(start = 16.dp)
                 )
@@ -81,7 +81,7 @@ fun ShoppingCartScreen(
                                 fontSize = 18.sp // Increased text size
                             )
                             Text(
-                                text = "Quantity: ${line.quantity}",
+                                text = "Aantal: ${line.quantity}",
                                 modifier = Modifier.width(80.dp),
                                 fontSize = 16.sp // Increased text size
                             )
@@ -125,7 +125,7 @@ fun ShoppingCartScreen(
                         },
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text(text = "Order Plaatsen")
+                        Text(text = "Bestelling Plaatsen")
                     }
                 }
             }

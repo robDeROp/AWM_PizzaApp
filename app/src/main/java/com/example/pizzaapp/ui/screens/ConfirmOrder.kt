@@ -30,7 +30,7 @@ fun ConfirmOrder(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Confirmation",
+                        text = "Bevestiging",
                         style = MaterialTheme.typography.h6,
                         modifier = Modifier.padding(start = 16.dp)
                     )
@@ -51,7 +51,7 @@ fun ConfirmOrder(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Thank you for your order, ${pizzaViewModel.currentUser!!.FN}!",
+                    text = "Bedankt voor je bestelling, ${pizzaViewModel.currentUser!!.FN}!",
                     style = MaterialTheme.typography.h5,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -82,12 +82,12 @@ fun ConfirmOrder(
                                     fontSize = 18.sp // Increased text size
                                 )
                                 Text(
-                                    text = "Quantity: ${line.quantity}",
+                                    text = "Aantal: ${line.quantity}",
                                     modifier = Modifier.width(80.dp),
                                     fontSize = 16.sp // Increased text size
                                 )
                                 Text(
-                                    text = "Total: ${
+                                    text = "Totaal: ${
                                         String.format(
                                             "%.2f",
                                             line.quantity * line.pizza.price

@@ -186,7 +186,7 @@ fun MenuList(
                                         },
                                         modifier = Modifier.height(50.dp).width(200.dp)
                                     ) {
-                                        Text("Add to cart")
+                                        Text("In Winkelwagen")
                                     }
                                 }
                             }

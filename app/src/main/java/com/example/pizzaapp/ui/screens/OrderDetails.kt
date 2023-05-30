@@ -54,7 +54,7 @@ fun OrderDetails(
 
                     Column {
                         Text(text = "Pizza ID: ${order.PizzaName}")
-                        Text(text = "Quantity: ${order.Quantity}")
+                        Text(text = "Aantal: ${order.Quantity}")
                     }
 
                     Divider(

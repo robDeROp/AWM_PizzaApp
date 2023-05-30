@@ -17,7 +17,7 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center,
         modifier = modifier.fillMaxSize()
     ) {
-        Text("Failed to login")
+        Text("Inloggen niet gelukt")
     }
 }
 @Preview(showBackground = true)

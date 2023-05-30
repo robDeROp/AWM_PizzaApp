@@ -27,8 +27,12 @@ fun OrderScreen(
 ) {
     var shoppingCartLines = pizzaViewModel.shoppingCartList
 
-    val hours = remember { mutableStateOf("") }
-    val minutes = remember { mutableStateOf("") }
+    val currentTime = LocalTime.now()
+    val currentHours = currentTime.hour.toString()
+    val currentMinutes = currentTime.minute.toString()
+
+    val hours = remember { mutableStateOf(currentHours) }
+    val minutes = remember { mutableStateOf(currentMinutes) }
     val comment = remember { mutableStateOf("") }
     val isTimeValid = remember { mutableStateOf(true) } // Track if the selected time is valid
 
