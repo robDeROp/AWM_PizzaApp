@@ -12,6 +12,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pizzaapp.model.CurrentUser
+import com.example.pizzaapp.ui.theme.Primary_200
+import com.example.pizzaapp.ui.theme.Primary_700
 
 //onRegisterClick
 
@@ -59,7 +61,8 @@ fun LoginScreen(
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            backgroundColor = Primary_200
         )
 
         Box(
@@ -93,16 +96,20 @@ fun LoginScreen(
                         pizzaViewModel.loginUser(email, password)
                     },
                     modifier = Modifier.fillMaxWidth(),
-                        enabled = isLoginEnabled
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Primary_700), // Set your desired color here
+
+                            enabled = isLoginEnabled
                 ) {
                     Text(text = "Login")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
+
                 Button(
                     onClick = {
                         onRegisterClick() },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Primary_700) // Set your desired color here
                 ) {
                     Text(text = "Nog geen account?")
                 }

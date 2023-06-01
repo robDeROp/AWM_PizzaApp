@@ -14,6 +14,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pizzaapp.ui.theme.Primary_200
+import com.example.pizzaapp.ui.theme.Primary_700
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -50,7 +52,7 @@ fun OrderScreen(
                 Text(
                     text = "Plaats je bestelling",
                     style = MaterialTheme.typography.h6,
-                    modifier = Modifier.padding(start = 16.dp)
+                    modifier = Modifier.padding(start = 16.dp),
                 )
             },
             navigationIcon = {
@@ -58,7 +60,9 @@ fun OrderScreen(
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            backgroundColor = Primary_200
+
         )
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -131,7 +135,9 @@ fun OrderScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp)
+                        .padding(vertical = 16.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Primary_700) // Set your desired color here
+
                 ) {
                     Text(text = "Bestelling plaatsen")
                 }

@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.pizzaapp.Network.getDetailsResponse
+import com.example.pizzaapp.ui.theme.Primary_200
 
 @Composable
 fun OrderDetails(
@@ -44,7 +45,9 @@ fun OrderDetails(
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            backgroundColor = Primary_200
+
         )
 
         if(currentOrder!=null) {

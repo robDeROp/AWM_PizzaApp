@@ -25,6 +25,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.pizzaapp.R
 import com.example.pizzaapp.model.ShoppingCartLine
+import com.example.pizzaapp.ui.theme.Primary_200
+import com.example.pizzaapp.ui.theme.Primary_700
 
 @Composable
 fun AdminScreen(modifier: Modifier = Modifier,
@@ -41,7 +43,7 @@ fun AdminScreen(modifier: Modifier = Modifier,
     Column {
         TopAppBar(
             modifier = Modifier.fillMaxWidth(),
-            backgroundColor = MaterialTheme.colors.primary
+            backgroundColor = Primary_200
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -197,7 +199,9 @@ fun AdminScreen(modifier: Modifier = Modifier,
                                     pizzaViewModel.getLines(order.BestellingId)
                                     ToDetails()
                                 },
-                                modifier = Modifier.padding(horizontal = 8.dp)
+                                modifier = Modifier.padding(horizontal = 8.dp),
+                                colors = ButtonDefaults.buttonColors(backgroundColor = Primary_700) // Set your desired color here
+
                             ) {
                                 Text(text = "Details")
                             }

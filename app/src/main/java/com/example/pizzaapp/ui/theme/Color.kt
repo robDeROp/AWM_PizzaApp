@@ -18,7 +18,7 @@ package com.example.pizzaapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Primary_200 = Color(0xFFfcdf7b)
-val Primary_500 = Color(0xFFec9740)
-val Primary_700 = Color(0xFFc77648)
+val Primary_200 = Color(0xFFec9740)
+val Primary_500 = Color(0xFFC06D17)
+val Primary_700 = Color(0xFFFF9458)
 val Teal200 = Color(0xFF03DAC5)

@@ -18,6 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pizzaapp.model.OrderHistoryLine
+import com.example.pizzaapp.ui.theme.Primary_200
+import com.example.pizzaapp.ui.theme.Primary_700
 
 @Composable
 fun AccountScreen(
@@ -52,7 +54,9 @@ fun AccountScreen(
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Terug")
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            backgroundColor = Primary_200
+
         )
 
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
@@ -176,7 +180,9 @@ fun AccountScreen(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Primary_700) // Set your desired color here
+
         ) {
             Text(text = "Afmelden")
         }

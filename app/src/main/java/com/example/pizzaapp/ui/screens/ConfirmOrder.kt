@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pizzaapp.ui.theme.Primary_200
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -39,7 +40,9 @@ fun ConfirmOrder(
                     IconButton(onClick = onBackHomeClick) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                     }
-                }
+                },
+                backgroundColor = Primary_200
+
             )
         },
         content = {

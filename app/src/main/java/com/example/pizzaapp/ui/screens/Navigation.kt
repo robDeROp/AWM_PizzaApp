@@ -95,6 +95,7 @@ fun AppNavigation() {
                 ToDetails = { navController.navigate("details") },
                 onLogoutButtonClick = {
                     navController.navigate("login")
+                    pizzaViewModel.currentUserRole = 0
                 }
             )
         }

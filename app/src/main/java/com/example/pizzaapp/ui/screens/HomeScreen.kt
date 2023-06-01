@@ -38,11 +38,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.request.ImageRequest
 import coil.compose.AsyncImage
 import com.example.pizzaapp.model.ShoppingCartLine
+import com.example.pizzaapp.ui.theme.Primary_200
+import com.example.pizzaapp.ui.theme.Primary_500
+import com.example.pizzaapp.ui.theme.Primary_700
 
 var pizzaList = mutableListOf<Pizza>()
 
@@ -60,7 +65,7 @@ fun MenuList(
     ) {
         TopAppBar(
             modifier = Modifier.fillMaxWidth(),
-            backgroundColor = MaterialTheme.colors.primary
+            backgroundColor = Primary_200
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -144,7 +149,10 @@ fun MenuList(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     var quantity by remember { mutableStateOf(0) }
-                                    TextButton(onClick = { if (quantity > 0) quantity-- }) {
+                                    TextButton(
+                                        onClick = { if (quantity > 0) quantity-- },
+                                        modifier = Modifier.semantics { contentDescription = "Verminder de hoeveelheid van $pizzas[index].name met één" }
+                                    ) {
                                         Text("-")
                                     }
                                     TextField(
@@ -154,10 +162,15 @@ fun MenuList(
                                                 newValue.toIntOrNull() ?: quantity
                                         },
                                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                                        modifier = Modifier.height(50.dp).width(80.dp)
+                                        modifier = Modifier.height(50.dp).width(80.dp).semantics {
+                                            contentDescription = "Huidige hoeveelheid: $quantity"
+                                        }
                                     )
                                     Spacer(modifier = Modifier.width(3.dp))
-                                    TextButton(onClick = { quantity++ }) {
+                                    TextButton(
+                                        onClick = { quantity++ },
+                                        modifier = Modifier.semantics { contentDescription = "Vermeerder de hoeveelheid van $pizzas[index].name met één" }
+                                    ) {
                                         Text("+")
                                     }
                                     Button(
@@ -184,7 +197,8 @@ fun MenuList(
                                                 }
                                             }
                                         },
-                                        modifier = Modifier.height(50.dp).width(200.dp)
+                                        modifier = Modifier.height(50.dp).width(200.dp),
+                                        colors = ButtonDefaults.buttonColors(backgroundColor = Primary_700) // Set your desired color here
                                     ) {
                                         Text("In Winkelwagen")
                                     }

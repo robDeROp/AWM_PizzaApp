@@ -14,6 +14,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pizzaapp.model.CurrentUser
 import com.example.pizzaapp.model.ShoppingCartLine
+import com.example.pizzaapp.ui.theme.Primary_200
+import com.example.pizzaapp.ui.theme.Primary_500
+import com.example.pizzaapp.ui.theme.Primary_700
 
 @Composable
 fun ShoppingCartScreen(
@@ -46,7 +49,9 @@ fun ShoppingCartScreen(
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            backgroundColor = Primary_200
+
         )
         Box(
             modifier = Modifier.fillMaxSize()
@@ -63,7 +68,9 @@ fun ShoppingCartScreen(
                     )
                     Button(
                         onClick = { onBackHomeClick() },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Primary_700) // Set your desired color here
+
                     ) {
                         Text(text = "Bekijk de menu")
                     }
@@ -124,6 +131,7 @@ fun ShoppingCartScreen(
                             }
                         },
                         modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Primary_700) // Set your desired color here
                     ) {
                         Text(text = "Bestelling Plaatsen")
                     }

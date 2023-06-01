@@ -11,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pizzaapp.ui.theme.Primary_200
+import com.example.pizzaapp.ui.theme.Primary_700
 
 @Composable
 fun RegisterScreen(modifier: Modifier = Modifier,
@@ -58,7 +60,9 @@ fun RegisterScreen(modifier: Modifier = Modifier,
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            backgroundColor = Primary_200
+
         )
         Box(
             modifier = Modifier.fillMaxSize()
@@ -116,13 +120,17 @@ fun RegisterScreen(modifier: Modifier = Modifier,
                 Button(
                     onClick = { pizzaViewModel.registerUser(firstName, lastName, email, password, phoneNr) },
                     enabled = isRegisterEnabled,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Primary_700) // Set your desired color here
+
                 ) {
                     Text(text = "Register")
                 }
                 Button(
                     onClick = { onLoginClick() },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Primary_700) // Set your desired color here
+
                 ) {
                     Text(text = "Al een account?")
                 }
